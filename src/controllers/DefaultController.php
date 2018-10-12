@@ -15,28 +15,28 @@ class DefaultController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'denyCallback' => function(){
-                    return $this->redirect(['site/index']);
-                },
-                'rules' => [
-                    [
-                        'actions' => ['error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
+    // public function behaviors()
+    // {
+    //     return [
+    //         'access' => [
+    //             'class' => AccessControl::className(),
+    //             'denyCallback' => function(){
+    //                 return $this->redirect(['site/index']);
+    //             },
+    //             'rules' => [
+    //                 [
+    //                     'actions' => ['error'],
+    //                     'allow' => true,
+    //                 ],
+    //                 [
+    //                     'actions' => ['index'],
+    //                     'allow' => true,
+    //                     'roles' => ['@'],
+    //                 ],
+    //             ],
+    //         ],
+    //     ];
+    // }
 
     /**
      * {@inheritdoc}

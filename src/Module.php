@@ -2,11 +2,26 @@
 
 namespace myzero1\moduarsite;
 
+use Yii;
+use yii\base\BootstrapInterface;
+use yii\web\ForbiddenHttpException;
+use yii\base\View;
+use yii\base\Controller;
+use yii\base\Application;
+
 /**
- * csite module definition class
+ * This is the main module class for the z1rbacp module.
+ *
+ *
+ * @author myzero1 <myzero1@sina.com>
+ * @since 2.0
  */
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
+    /**
+     * @var string  if it equal to 'myzero1', main.php will add autoload and alias
+     */
+    public static $z1layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/layouts/main';  //blank
     /**
      * @var string  if it equal to 'myzero1', main.php will add autoload and alias
      */
@@ -65,16 +80,23 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    // public $controllerNamespace = 'backend\modules\common\modules\csite\controllers';
+    public $controllerNamespace = 'myzero1\moduarsite\controllers';
+    
+    /**
+     * @var array the params will merger to module
+     */
+    public $params = [];
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function bootstrap($app)
     {
-        parent::init();
+        $this->setControllerMap($app);
+        // $this->addConfig($app);
+        // $this->addBehaviors($app);
+        // $this->rewriteLibs($app);
 
-        // custom initialization code goes here
     }
 
     /**
@@ -87,7 +109,176 @@ class Module extends \yii\base\Module
         }
 
         \Yii::$app->params['dependClass'] = \Yii::$app->controller->module->dependClass;
-        
+
         return true;
+    }
+
+    private function rewriteLibs($app){
+        \Yii::$classMap['yii\db\Command'] = '@vendor/myzero1/yii2-log/src/components/libs/Command.php';
+    }
+
+    private function addConfig($app){
+        $aConfig = require(__DIR__ . '/main.php');
+        
+        $z1logParams = array_merge($aConfig['params'], $this->params, $this->params);
+
+        // var_dump($z1logParams);exit;
+
+        $app->params['z1log']['params']['template'] = $z1logParams['template'];
+        $app->params['z1log']['params']['userInfo'] = $z1logParams['userInfo'];
+        $app->params['z1log']['params']['remarksFieldsKey'] = $z1logParams['remarksFieldsKey'];
+
+        if (isset($z1logParams['urlManager']['rules'])) {
+            $app->urlManager->addRules(
+                $z1logParams['urlManager']['rules'],
+                false
+            );
+        }
+    }
+
+    private function setControllerMap($app){
+        var_dump('asdf');exit;
+    }
+
+    private function addBehaviors($app){
+        $app->on(Controller::EVENT_BEFORE_ACTION,['\myzero1\log\Module','z1logBeforeAction']);
+        $app->view->on(View::EVENT_BEFORE_RENDER,['\myzero1\log\Module','z1logBeforeRender']);
+        $app->on(Application::EVENT_AFTER_REQUEST,['\myzero1\log\Module','z1logAfterRequest']);
+    }
+
+    /**
+     * Set method to get,bodyParams to array().
+     * 
+     * @author myzero1
+     * @since 2.0.13
+     */
+    public static function z1logBeforeAction($event)
+    {
+        if (isset($_SESSION['z1logSaved'])) {
+            $_POST['_method'] = 'get';
+            $_SERVER['REQUEST_METHOD'] = 'get';
+
+            \Yii::$app->request->bodyParams = array();
+        }
+    }
+
+    /**
+     * Rend view by renderAjax.
+     * 
+     * @param  array $event
+     * 
+     * @author myzero1
+     * @since 2.0.13
+     */
+    public static function z1logBeforeRender($event)
+    {
+        if (isset(\Yii::$app->params['z1log']['params']['z1logToRending'])) {
+            unset(\Yii::$app->params['z1log']['params']['z1logToRending']);
+
+            $layout = \Yii::$app->layout;
+            if (!is_null(\Yii::$app->controller->module->layout)) {
+                $layout = \Yii::$app->controller->module->layout;
+            }
+            if (!is_null(\Yii::$app->controller->layout)) {
+                $layout = \Yii::$app->controller->layout;
+            }
+
+            // if (!isset(\Yii::$app->params['z1logRended'])) {
+            //     \Yii::$app->params['z1logRended'] = true;
+            //     // \Yii::$app->layout = '//blank';
+            //     \Yii::$app->layout = self::$z1layout;
+            // }
+
+        }
+
+
+        // var_dump($layout);exit;
+
+        // if (!isset(\Yii::$app->params['z1logRended'])) {
+        //     \Yii::$app->params['z1logRended'] = true;
+
+        //     // $pathinfo = pathinfo($event->viewFile);
+        //     // $sHtml = \Yii::$app->view->renderAjax($pathinfo['filename'],$event->params);
+        
+
+
+        //     // \Yii::$app->view->context->layout = '//blank';
+        //     \Yii::$app->layout = '//blank';
+        // }
+    }
+
+    /**
+     * unset the z1logSaved session.
+     * 
+     * @param  array $event
+     * 
+     * @author myzero1
+     * @since 2.0.13
+     */
+    public static function z1logAfterRequest($event)
+    {
+        if (isset($_SESSION['z1logSaved'])) {
+            unset($_SESSION['z1logSaved']);
+        }
+    }
+
+    /**
+     * unset the z1logSaved session.
+     * 
+     * @param string $model text,screenshot,all
+     * @param string $screenshot 'z1user/user2/update' The template router
+     * @param array $screenshotParams ['id'=>21]
+     * @param string $text z1user/user2/update
+     *
+     * @return viod 
+     * 
+     * @author myzero1
+     * @since 2.0.13
+     */
+    // public static function add($z1LogParams, $requestParams){
+    public static function add($model, $screenshot, $screenshotParams, $text){
+        $screenshot = '';
+        $textContent = '';
+        
+        if (in_array($model, ['all','screenshot']) ) {
+            $params = \Yii::$app->request->get();
+            $params = array_merge($params, $screenshotParams);
+
+            $sHtml = \Yii::$app->runAction('/' . $screenshot, $params);
+
+            $sHtmlCom = $sHtml;
+            $sHtmlCom = ltrim(rtrim(preg_replace(array("/> *([^ ]*) *</","//","'/\*[^*]*\*/'","/\r\n/","/\n/","/\t/",'/>[ ]+</'),array(">\\1<",'','','','','','><'),$sHtml)));
+            $sHtmlCom = str_replace('href="', 'hrefDisabled="', $sHtmlCom);
+            $sHtmlCom = str_replace('action="', 'actionDisabled="', $sHtmlCom);
+            $sHtmlCom = str_replace('type="submit"', 'typeDisabled="submit"', $sHtmlCom);
+
+            $screenshot = $sHtmlCom;
+        }
+
+        if (in_array($model, ['all','text']) ) {
+            $textContent = $text['text']();
+        }
+
+        $sql = sprintf("INSERT INTO `z1log_log` (
+                    `id`,
+                    `user_id`,
+                    `user_name`,
+                    `ip`,
+                    `created`,
+                    `url`,
+                    `text`,
+                    `screenshot`
+                )
+                VALUES
+                    (NULL, %d, '%s', '%s', %d, '%s', '%s', '%s')",
+                    \Yii::$app->params['z1log']['params']['userInfo']['id'](),
+                    \Yii::$app->params['z1log']['params']['userInfo']['name'](),
+                    \Yii::$app->request->userIP,
+                    time(),
+                    $z1LogParams['screenshot'],
+                    $textContent,
+                    base64_encode($screenshot));
+
+        \Yii::$app->db->createCommand($sql)->execute();
     }
 }
