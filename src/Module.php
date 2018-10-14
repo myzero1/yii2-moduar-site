@@ -25,7 +25,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @var string  if it equal to 'myzero1', main.php will add autoload and alias
      */
-    public $from;
 
     /**
      * @var array dependClass 
@@ -82,10 +81,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        // var_dump($this->bootstrap);
         $this->addConfig($app);
-        // var_dump($this->bootstrap);exit;
-        $this->setBootstrap($app, $this->bootstrap);
+        // var_dump($this->components);exit;
         // $this->setControllerMap($app);
         // $this->addBehaviors($app);
         // $this->rewriteLibs($app);
@@ -111,7 +108,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     private function addConfig($app){
-        \Yii::configure($this, require __DIR__ . '/config/main.php');
+        $config = require __DIR__ . '/config/main.php';
+        \Yii::configure($this, $config);
+        $this->setBootstrap($app, $this->bootstrap);
+        $this->setUrlManager($app, $config);
     }
 
     private function addBehaviors($app){
@@ -122,7 +122,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     /**
      * Set method to get,bodyParams to array().
-     * 
+     *
      * @author myzero1
      * @since 2.0.13
      */
@@ -226,5 +226,29 @@ class Module extends \yii\base\Module implements BootstrapInterface
                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
            }
        }
+    }
+
+    private function setUrlManager($app, $config){
+        $rules = isset($config['components']['urlManager']['rules']) ? $config['components']['urlManager']['rules'] : [];
+        // var_dump($rules);exit;
+        $app->getUrlManager()->addRules($rules, false);
+
+       // if ($app instanceof \yii\web\Application) {
+       //     $app->getUrlManager()->addRules([
+       //         $this->id => $this->id . '/default/index',
+       //         $this->id . '/<id:\w+>' => $this->id . '/default/view',
+       //         $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>' => $this->id . '/<controller>/<action>',
+       //     ], false);
+       // } elseif ($app instanceof \yii\console\Application) {
+       //     $app->controllerMap[$this->id] = [
+       //         'class' => 'yii\gii\console\GenerateController',
+       //         'generators' => array_merge($this->coreGenerators(), $this->generators),
+       //         'module' => $this,
+       //     ];
+       // }
+        // array_merge($app->urlManager->rules, $this->urlManager->rules);
+        // var_dump($app->urlManager);
+        // var_dump($this->urlManager);
+        // exit;
     }
 }

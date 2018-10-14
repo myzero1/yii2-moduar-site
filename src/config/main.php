@@ -65,10 +65,8 @@ return [
     'components' => [
         'urlManager' => [
         	'class' => '\yii\web\urlManager',
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
             'rules' => [
-            	'modularsite/test1/site' => 'modularsite/test1/default',
+            	'/modularsite/site/index' => '/modularsite/default/index',
             ],
         ],
     ]
