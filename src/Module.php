@@ -39,21 +39,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public $dependClass;
 
     /**
-     * @var array menu 
+     * @var array bootstrap []
      *
-        [
-            "z1demo" => [
-                'label' => Yii::t('app', '平台首页'),
-                // 'url' => Yii::$app->homeUrl,
-                'url' => ['/site/index'],
-                'icon' => 'fa-dashboard',
-                'active' => Yii::$app->request->url === Yii::$app->homeUrl || Yii::$app->request->url=='/site/index',
-                'items' => [
-                ]
-            ],
-        ];
-     * 
      */
+    public $bootstrap = [];
+
     public $menu;
 
     /**
@@ -92,8 +82,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $this->setControllerMap($app);
-        // $this->addConfig($app);
+        // var_dump($this->bootstrap);
+        $this->addConfig($app);
+        // var_dump($this->bootstrap);exit;
+        $this->setBootstrap($app, $this->bootstrap);
+        // $this->setControllerMap($app);
         // $this->addBehaviors($app);
         // $this->rewriteLibs($app);
 
@@ -102,42 +95,23 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
-    {
-        if (!parent::beforeAction($action)) {
-            return false;
-        }
+    // public function beforeAction($action)
+    // {
+    //     if (!parent::beforeAction($action)) {
+    //         return false;
+    //     }
 
-        \Yii::$app->params['dependClass'] = \Yii::$app->controller->module->dependClass;
+    //     \Yii::$app->params['dependClass'] = \Yii::$app->controller->module->dependClass;
 
-        return true;
-    }
+    //     return true;
+    // }
 
     private function rewriteLibs($app){
         \Yii::$classMap['yii\db\Command'] = '@vendor/myzero1/yii2-log/src/components/libs/Command.php';
     }
 
     private function addConfig($app){
-        $aConfig = require(__DIR__ . '/main.php');
-        
-        $z1logParams = array_merge($aConfig['params'], $this->params, $this->params);
-
-        // var_dump($z1logParams);exit;
-
-        $app->params['z1log']['params']['template'] = $z1logParams['template'];
-        $app->params['z1log']['params']['userInfo'] = $z1logParams['userInfo'];
-        $app->params['z1log']['params']['remarksFieldsKey'] = $z1logParams['remarksFieldsKey'];
-
-        if (isset($z1logParams['urlManager']['rules'])) {
-            $app->urlManager->addRules(
-                $z1logParams['urlManager']['rules'],
-                false
-            );
-        }
-    }
-
-    private function setControllerMap($app){
-        var_dump('asdf');exit;
+        \Yii::configure($this, require __DIR__ . '/config/main.php');
     }
 
     private function addBehaviors($app){
@@ -222,63 +196,35 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
     }
 
-    /**
-     * unset the z1logSaved session.
-     * 
-     * @param string $model text,screenshot,all
-     * @param string $screenshot 'z1user/user2/update' The template router
-     * @param array $screenshotParams ['id'=>21]
-     * @param string $text z1user/user2/update
-     *
-     * @return viod 
-     * 
-     * @author myzero1
-     * @since 2.0.13
-     */
-    // public static function add($z1LogParams, $requestParams){
-    public static function add($model, $screenshot, $screenshotParams, $text){
-        $screenshot = '';
-        $textContent = '';
-        
-        if (in_array($model, ['all','screenshot']) ) {
-            $params = \Yii::$app->request->get();
-            $params = array_merge($params, $screenshotParams);
 
-            $sHtml = \Yii::$app->runAction('/' . $screenshot, $params);
+    private function setControllerMap($app){
+        // var_dump('asdf');exit;
+    }
 
-            $sHtmlCom = $sHtml;
-            $sHtmlCom = ltrim(rtrim(preg_replace(array("/> *([^ ]*) *</","//","'/\*[^*]*\*/'","/\r\n/","/\n/","/\t/",'/>[ ]+</'),array(">\\1<",'','','','','','><'),$sHtml)));
-            $sHtmlCom = str_replace('href="', 'hrefDisabled="', $sHtmlCom);
-            $sHtmlCom = str_replace('action="', 'actionDisabled="', $sHtmlCom);
-            $sHtmlCom = str_replace('type="submit"', 'typeDisabled="submit"', $sHtmlCom);
 
-            $screenshot = $sHtmlCom;
-        }
+    private function setBootstrap($app, $bootstrap){
 
-        if (in_array($model, ['all','text']) ) {
-            $textContent = $text['text']();
-        }
+       foreach ($bootstrap as $class) {
+           $component = null;
+           if (is_string($class)) {
+               if ($this->has($class)) {
+                   $component = $this->get($class);
+               } elseif ($this->hasModule($class)) {
+                   $component = $this->getModule($class);
+               } elseif (strpos($class, '\\') === false) {
+                   throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
+               }
+           }
+           if (!isset($component)) {
+               $component = Yii::createObject($class);
+           }
 
-        $sql = sprintf("INSERT INTO `z1log_log` (
-                    `id`,
-                    `user_id`,
-                    `user_name`,
-                    `ip`,
-                    `created`,
-                    `url`,
-                    `text`,
-                    `screenshot`
-                )
-                VALUES
-                    (NULL, %d, '%s', '%s', %d, '%s', '%s', '%s')",
-                    \Yii::$app->params['z1log']['params']['userInfo']['id'](),
-                    \Yii::$app->params['z1log']['params']['userInfo']['name'](),
-                    \Yii::$app->request->userIP,
-                    time(),
-                    $z1LogParams['screenshot'],
-                    $textContent,
-                    base64_encode($screenshot));
-
-        \Yii::$app->db->createCommand($sql)->execute();
+           if ($component instanceof BootstrapInterface) {
+               Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+               $component->bootstrap($this);
+           } else {
+               Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+           }
+       }
     }
 }
