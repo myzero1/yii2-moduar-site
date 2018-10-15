@@ -63,19 +63,19 @@ return [
         ],
     ],
     'components' => [
-        'urlManager' => [
-        	'class' => '\yii\web\urlManager',
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            	'/modularsite/site/index' => '/modularsite/default/index',
-            ],
-        ],
-        'user' => [
-            'class' => 'yii\web\User',
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-        ],
-    ]
+        // 'urlManager1' => [
+        // 	'class' => '\yii\web\urlManager',
+        //     'enablePrettyUrl' => true,
+        //     'showScriptName' => false,
+        //     'rules' => [
+        //     	'/modularsite/site/index' => '/modularsite/default/index',
+        //     ],
+        // ],
+        // 'user1' => [
+        //     'class' => 'yii\web\User',
+        //     'identityClass' => 'common\models\User',
+        //     'enableAutoLogin' => true,
+        //     'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+        // ],
+    ],
 ];

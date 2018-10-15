@@ -43,6 +43,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $bootstrap = [];
 
+    /**
+     * @var array bootstrap []
+     *
+     */
+    public $moduarConfig = [];
+
     public $menu;
 
     /**
@@ -93,6 +99,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     private function addConfig($app){
         $config = require __DIR__ . '/config/main.php';
 
+        $config = \yii\helpers\ArrayHelper::merge($config, $this->moduarConfig);
+
         // set modules as the children of moduarsite.
         \Yii::configure($this, $config);
 
@@ -100,10 +108,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $this->setBootstrap($app, $this->bootstrap);
 
         //merger the components of modular config file.
-        \Yii::$app->components = array_merge(\Yii::$app->components, $this->components);
+        \Yii::$app->components = \yii\helpers\ArrayHelper::merge(\Yii::$app->components, $this->components);
 
         // merger the params of modular config file.
-        \Yii::$app->params = array_merge(\Yii::$app->params, $this->params);
+        \Yii::$app->params = \yii\helpers\ArrayHelper::merge(\Yii::$app->params, $this->params);
     }
 
     /**
