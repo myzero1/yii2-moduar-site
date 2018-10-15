@@ -76,7 +76,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @inheritdoc
      */
     public $controllerNamespace = 'myzero1\moduarsite\controllers';
-    
+
     /**
      * @var array the params will merger to module
      */
@@ -88,12 +88,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->addConfig($app);
-        // var_dump('111');exit;
-        // var_dump($this->components);exit;
-        // $this->setControllerMap($app);
-        // $this->addBehaviors($app);
-        // $this->rewriteLibs($app);
-
     }
 
     private function addConfig($app){
@@ -112,113 +106,16 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
         // merger the params of modular config file.
         \Yii::$app->params = \yii\helpers\ArrayHelper::merge(\Yii::$app->params, $this->params);
+
+
+        // for golbal set
+        $this->defaultRoute = 'site';
+        $app->getUrlManager()->addRules([
+            "<controller:\w+>/<action:\w+>" => '/' . $this->id . "/<controller>/<action>",
+        ], false);
+        \Yii::$app->defaultRoute  = $this->id;
+
     }
-
-    /**
-     * @inheritdoc
-     */
-    // public function beforeAction($action)
-    // {
-    //     if (!parent::beforeAction($action)) {
-    //         return false;
-    //     }
-
-    //     \Yii::$app->params['dependClass'] = \Yii::$app->controller->module->dependClass;
-
-    //     return true;
-    // }
-
-    private function rewriteLibs($app){
-        \Yii::$classMap['yii\db\Command'] = '@vendor/myzero1/yii2-log/src/components/libs/Command.php';
-    }
-
-    private function addBehaviors($app){
-        $app->on(Controller::EVENT_BEFORE_ACTION,['\myzero1\log\Module','z1logBeforeAction']);
-        $app->view->on(View::EVENT_BEFORE_RENDER,['\myzero1\log\Module','z1logBeforeRender']);
-        $app->on(Application::EVENT_AFTER_REQUEST,['\myzero1\log\Module','z1logAfterRequest']);
-    }
-
-    /**
-     * Set method to get,bodyParams to array().
-     *
-     * @author myzero1
-     * @since 2.0.13
-     */
-    public static function z1logBeforeAction($event)
-    {
-        if (isset($_SESSION['z1logSaved'])) {
-            $_POST['_method'] = 'get';
-            $_SERVER['REQUEST_METHOD'] = 'get';
-
-            \Yii::$app->request->bodyParams = array();
-        }
-    }
-
-    /**
-     * Rend view by renderAjax.
-     * 
-     * @param  array $event
-     * 
-     * @author myzero1
-     * @since 2.0.13
-     */
-    public static function z1logBeforeRender($event)
-    {
-        if (isset(\Yii::$app->params['z1log']['params']['z1logToRending'])) {
-            unset(\Yii::$app->params['z1log']['params']['z1logToRending']);
-
-            $layout = \Yii::$app->layout;
-            if (!is_null(\Yii::$app->controller->module->layout)) {
-                $layout = \Yii::$app->controller->module->layout;
-            }
-            if (!is_null(\Yii::$app->controller->layout)) {
-                $layout = \Yii::$app->controller->layout;
-            }
-
-            // if (!isset(\Yii::$app->params['z1logRended'])) {
-            //     \Yii::$app->params['z1logRended'] = true;
-            //     // \Yii::$app->layout = '//blank';
-            //     \Yii::$app->layout = self::$z1layout;
-            // }
-
-        }
-
-
-        // var_dump($layout);exit;
-
-        // if (!isset(\Yii::$app->params['z1logRended'])) {
-        //     \Yii::$app->params['z1logRended'] = true;
-
-        //     // $pathinfo = pathinfo($event->viewFile);
-        //     // $sHtml = \Yii::$app->view->renderAjax($pathinfo['filename'],$event->params);
-        
-
-
-        //     // \Yii::$app->view->context->layout = '//blank';
-        //     \Yii::$app->layout = '//blank';
-        // }
-    }
-
-    /**
-     * unset the z1logSaved session.
-     * 
-     * @param  array $event
-     * 
-     * @author myzero1
-     * @since 2.0.13
-     */
-    public static function z1logAfterRequest($event)
-    {
-        if (isset($_SESSION['z1logSaved'])) {
-            unset($_SESSION['z1logSaved']);
-        }
-    }
-
-
-    private function setControllerMap($app){
-        // var_dump('asdf');exit;
-    }
-
 
     private function setBootstrap($app, $bootstrap){
 
@@ -244,29 +141,5 @@ class Module extends \yii\base\Module implements BootstrapInterface
                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
            }
        }
-    }
-
-    private function setUrlManager($app, $config){
-        $rules = isset($config['components']['urlManager']['rules']) ? $config['components']['urlManager']['rules'] : [];
-        // var_dump($rules);exit;
-        $app->getUrlManager()->addRules($rules, false);
-
-       // if ($app instanceof \yii\web\Application) {
-       //     $app->getUrlManager()->addRules([
-       //         $this->id => $this->id . '/default/index',
-       //         $this->id . '/<id:\w+>' => $this->id . '/default/view',
-       //         $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>' => $this->id . '/<controller>/<action>',
-       //     ], false);
-       // } elseif ($app instanceof \yii\console\Application) {
-       //     $app->controllerMap[$this->id] = [
-       //         'class' => 'yii\gii\console\GenerateController',
-       //         'generators' => array_merge($this->coreGenerators(), $this->generators),
-       //         'module' => $this,
-       //     ];
-       // }
-        // array_merge($app->urlManager->rules, $this->urlManager->rules);
-        // var_dump($app->urlManager);
-        // var_dump($this->urlManager);
-        // exit;
     }
 }
