@@ -82,6 +82,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         $this->addConfig($app);
+        // var_dump('111');exit;
         // var_dump($this->components);exit;
         // $this->setControllerMap($app);
         // $this->addBehaviors($app);
@@ -111,7 +112,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $config = require __DIR__ . '/config/main.php';
         \Yii::configure($this, $config);
         $this->setBootstrap($app, $this->bootstrap);
-        $this->setUrlManager($app, $config);
+        \Yii::$app->components = array_merge(\Yii::$app->components, $this->components);
+        // $this->setUrlManager($app, $config);
     }
 
     private function addBehaviors($app){
