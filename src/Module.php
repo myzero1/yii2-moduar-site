@@ -90,6 +90,22 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     }
 
+    private function addConfig($app){
+        $config = require __DIR__ . '/config/main.php';
+
+        // set modules as the children of moduarsite.
+        \Yii::configure($this, $config);
+
+        //run the bootstrap of the config file
+        $this->setBootstrap($app, $this->bootstrap);
+
+        //merger the components of modular config file.
+        \Yii::$app->components = array_merge(\Yii::$app->components, $this->components);
+
+        // merger the params of modular config file.
+        \Yii::$app->params = array_merge(\Yii::$app->params, $this->params);
+    }
+
     /**
      * @inheritdoc
      */
@@ -106,14 +122,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     private function rewriteLibs($app){
         \Yii::$classMap['yii\db\Command'] = '@vendor/myzero1/yii2-log/src/components/libs/Command.php';
-    }
-
-    private function addConfig($app){
-        $config = require __DIR__ . '/config/main.php';
-        \Yii::configure($this, $config);
-        $this->setBootstrap($app, $this->bootstrap);
-        \Yii::$app->components = array_merge(\Yii::$app->components, $this->components);
-        // $this->setUrlManager($app, $config);
     }
 
     private function addBehaviors($app){

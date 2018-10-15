@@ -71,5 +71,11 @@ return [
             	'/modularsite/site/index' => '/modularsite/default/index',
             ],
         ],
+        'user' => [
+            'class' => 'yii\web\User',
+            'identityClass' => 'common\models\User',
+            'enableAutoLogin' => true,
+            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+        ],
     ]
 ];
