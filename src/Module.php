@@ -97,7 +97,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     private function addConfig($app){
-        $config = require __DIR__ . '/config/main.php';
+        $config = require __DIR__ . '/config/moduarConfig.php';
 
         $config = \yii\helpers\ArrayHelper::merge($config, $this->moduarConfig);
 
