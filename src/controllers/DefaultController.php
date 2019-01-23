@@ -56,7 +56,37 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
+        // $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
+        return $this->render('index');
+    }
+
+    /**
+     * Renders the index view for the module
+     * @return string
+     */
+    public function actionLevel1()
+    {
+        // $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
+        return $this->render('index');
+    }
+
+    /**
+     * Renders the index view for the module
+     * @return string
+     */
+    public function actionLevel21()
+    {
+        // $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
+        return $this->render('index');
+    }
+
+    /**
+     * Renders the index view for the module
+     * @return string
+     */
+    public function actionLevel22()
+    {
+        // $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
         return $this->render('index');
     }
 
