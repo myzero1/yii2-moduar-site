@@ -1,81 +1,41 @@
 <?php
 return [
+    // 'id' => 'app-backend',
+    // 'basePath' => dirname(__DIR__),
     // 'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => [
-    	// 'z1log',
-    ],
+    'bootstrap' => ['log'],
+    // 'defaultRoute' => '/adminlteiframe/layout', // for adminlteiframe theme
+    // 'controllerMap' => [
+    //     'adminlteiframe' => [ // for adminlteiframe theme
+    //         'class' => 'myzero1\adminlteiframe\controllers\SiteController'
+    //     ],
+    //     'demo' => [ // for the menu of demo
+    //         'class' => 'myzero1\adminlteiframe\controllers\DemoController'
+    //     ]
+    // ],
+    // 'layout' => 'main',// to set theme by setting layout and layoutPath
+    // 'layoutPath' => \Yii::getAlias('@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlte/layouts'),
+    // 'layoutPath' => \Yii::getAlias('@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts'),
     'modules' => [
-        // 'z1log' => [
-        //     'class' => '\myzero1\log\Module',
-        //     'params' => [
-        //         'urlManager' => [
-        //             'rules' => [
-        //                 // 'rate/area/index' => 'rate/jf-core-area/index',
-        //             ],
-        //         ],
-        //         'remarksFieldsKey' => [
-        //             'remark', // default filed
-        //             'r1', // custom field, can add it by yourself
-        //         ],
-        //         'userInfo' => [
-        //             'id' => function(){
-        //                 if(\Yii::$app->user->isGuest){
-        //                     $id = 0;
-        //                 } else {
-        //                     $id = \Yii::$app->user->identity->id;
-        //                 }
-
-        //                 return $id;
-        //             },
-        //             'name' => function(){
-        //                 if(\Yii::$app->user->isGuest){
-        //                     $name = 'system';
-        //                 } else {
-        //                     $name = \Yii::$app->user->identity->username;
-        //                 }
-        //                 return $name;
-        //             }
-        //         ],
-        //         'template' => [
-        //             'user2/update' => [
-        //                 'model' => 'all', // text,screenshot,all
-        //                 'text' => function(){
-        //                     return '修改用户'; 
-        //                 },
-        //                 'screenshot' => 'user2/update', // The template of screenshot
-        //                 'obj' => [
-        //                     'label' => '.field-user2-username .control-label',
-        //                     'value' => '#user2-username',
-        //                 ],
-        //                 'remarks' => [// the items must be Closure
-        //                     'remark' => function(){return 'default remark'.time();},
-        //                     'r1' => function(){return 'r1'.time();},
-        //                 ],
-        //             ],
-        //         ],
-        //     ],
-        // ],
-        'modularsite' => [
-            'class' => '\myzero1\moduarsite\Module',
+        'z1site' => [
+            'class' => 'backend\modules\z1site\Module',
         ],
-        'test1' => [
-            'class' => 'backend\modules\test\test1',
+        'moduarsite' => [
+            'class' => '\myzero1\moduarsite\Module',
         ],
     ],
     'components' => [
-        // 'urlManager1' => [
-        // 	'class' => '\yii\web\urlManager',
-        //     'enablePrettyUrl' => true,
-        //     'showScriptName' => false,
-        //     'rules' => [
-        //     	'/modularsite/site/index' => '/modularsite/default/index',
-        //     ],
-        // ],
-        // 'user1' => [
-        //     'class' => 'yii\web\User',
-        //     'identityClass' => 'common\models\User',
-        //     'enableAutoLogin' => true,
-        //     'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-        // ],
+        'view' => [
+            'class' => 'yii\web\View',
+            'theme' => [
+                // 'class' => '\yii\base\Theme',
+                'pathMap' => [
+                    '@app/views' => '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlte', // using the adminlte theme
+                    // '@app/views' => '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe', // using the adminlteiframe theme
+                ],
+            ],
+        ],
+    ],
+    'params' => [
     ],
 ];

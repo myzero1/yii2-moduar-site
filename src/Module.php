@@ -142,4 +142,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
            }
        }
     }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        // var_dump($_SESSION);exit;
+
+        \Yii::configure($this, require __DIR__ . '/config/main.php');
+        \Yii::$app->view->theme = $this->view->theme;
+    }
 }
