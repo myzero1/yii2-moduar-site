@@ -168,3 +168,13 @@ Usage scenario
 ```
 
 * Use ` z1logAdd ` api,when we want to add log,but there is not updating with the action.
+
+
+in app main file
+
+'defaultRoute' => '/moduarsite/site/index',
+
+
+
+    'defaultRoute' => '/moduarsite/site/layout', // for adminlteiframe theme
+    'defaultRoute' => '/moduarsite/site/index', // for admin theme

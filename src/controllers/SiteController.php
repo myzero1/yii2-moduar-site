@@ -18,4 +18,16 @@ class SiteController extends Controller
         // $this->layout = 'main';
         return $this->render('index');
     }
+
+    /**
+     * Placeholdon layout.
+     *
+     * @return string
+     */
+    public function actionLayout()
+    {
+        // var_dump('expression');exit;
+        $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
+        return $this->render('@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/site/default');
+    }
 }
