@@ -5,7 +5,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
+use myzero1\moduarsite\models\form\LoginForm;
 
 /**
  * Site controller
