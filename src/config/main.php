@@ -32,6 +32,26 @@ return [
                 ],
             ],
         ],
+        'assetManager' => [
+            'class' => 'yii\web\AssetManager',
+            // 'forceCopy' => true,// true/false
+            'bundles'=> [
+                // 'myzero1\adminlteiframe\assets\php\components\LayoutAsset' => [
+                //     'skin' => 'skin-red',// skin-{blue|black|purple|green|red|yellow}[-light],example skin-blue,skin-blue-light,
+                //     'menuRefreshTab' => false, // true,false
+                //     'jsVersion' => '1.7',
+                //     'cssVersion' => '1.7',
+                // ], // for adminlteiframe theme
+                'myzero1\adminlteiframe\assets\php\components\AdminLteAsset' => [
+                    'skin' => 'skin-red',// skin-{blue|black|purple|green|red|yellow}[-light],example skin-blue,skin-blue-light,
+                    'jsVersion' => '1.7',
+                    'cssVersion' => '1.7',
+                ], // for adminlte theme
+                'myzero1\adminlteiframe\assets\php\components\MainAsset' => [
+                    'showJParticle' => 'false', // 'false'/'true', default 'true',required
+                ], // for all theme
+            ],
+        ],
     ],
     'params' => [
         'menu' => [

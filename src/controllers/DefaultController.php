@@ -67,7 +67,7 @@ class DefaultController extends Controller
     public function actionLevel1()
     {
         // $this->layout = '@vendor/myzero1/yii2-theme-adminlteiframe/src/views/adminlteiframe/layouts/layout';
-        return $this->render('index1');
+        return $this->render('index');
     }
 
     /**

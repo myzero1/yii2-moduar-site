@@ -154,5 +154,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
         \Yii::configure($this, require __DIR__ . '/config/main.php');
         \Yii::$app->view->theme = $this->view->theme;
+        \Yii::$app->assetManager->bundles = $this->assetManager->bundles;
     }
 }
