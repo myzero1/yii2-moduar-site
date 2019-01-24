@@ -191,3 +191,11 @@ in app main file
             'loginUrl'=>['/moduarsite/site/login'],
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
+
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                '<controller:(site)>/<action>' => 'moduarsite/<controller>/<action>',
+            ],
+        ],
