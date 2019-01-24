@@ -4,6 +4,15 @@ return [
     // 'basePath' => dirname(__DIR__),
     // 'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
+    'controllerMap' => [
+        // 'adminlteiframe' => [ // for adminlteiframe theme
+        //     'class' => 'myzero1\adminlteiframe\controllers\SiteController'
+        // ],
+        // http://t1.test/moduarsite/demo/level21
+        'demo' => [ // for the menu of demo
+            'class' => 'myzero1\adminlteiframe\controllers\DemoController'
+        ]
+    ],
     'modules' => [
         'z1site' => [
             'class' => 'backend\modules\z1site\Module',
