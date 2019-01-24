@@ -172,9 +172,22 @@ Usage scenario
 
 in app main file
 
-'defaultRoute' => '/moduarsite/site/index',
 
-
-
-    'defaultRoute' => '/moduarsite/site/layout', // for adminlteiframe theme
+    // 'defaultRoute' => '/moduarsite/site/layout', // for adminlteiframe theme
     'defaultRoute' => '/moduarsite/site/index', // for admin theme
+    'modules' => [
+        // 'z1site' => [
+        //     'class' => 'backend\modules\z1site\Module',
+        // ],
+        'moduarsite' => [
+            'class' => '\myzero1\moduarsite\Module',
+        ],
+    ],
+
+        'user' => [
+            // 'identityClass' => 'common\models\User',
+            'identityClass' => 'myzero1\moduarsite\models\User',
+            'enableAutoLogin' => true,
+            'loginUrl'=>['/moduarsite/site/login'],
+            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+        ],
